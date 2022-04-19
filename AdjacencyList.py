@@ -160,8 +160,8 @@ class AdjacencyList:
         if seed != 0: #If we set the seed to 0, then it'll just be random
             seed(seed) #sets rng seed
 
-        startingX = randint(0, 699, 1)
-        startingY = randint(0, 699, 1)
+        startingX = randint(0, 699)
+        startingY = randint(0, 699)
         startingKey = convertCoordsToKey(startingX, startingY)
 
         carverStack = deque([startingKey]) #initial carver point
@@ -213,8 +213,8 @@ class AdjacencyList:
 
 
 def generateRandCoordTup():
-    X = randint(0, 699, 1)
-    Y = randint(0, 699, 1)
+    X = randint(0, 699)
+    Y = randint(0, 699)
     return (X,Y)
 
 
