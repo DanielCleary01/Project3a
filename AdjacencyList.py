@@ -168,22 +168,33 @@ class AdjacencyList:
 
         #MAIN GENERATION ALGORITHM FOR CARVING MAZE
         while carverStack: #has elements
+            
             stackTop = carverStack[0] #gets top element(where the carver is right now)
             topCoords = convertToTuple(stackTop) #gets numerical form of the coords
             validDirs = self.returnValidDirections(stackTop) #gets set of valid directions
-            randomDirection = choice(validDirs) #choses random direction for carver to move in
+            
+            if not validDirs and carverStack: #If there are no valid directions and carver stack has elements left
+                carverStack.pop() #pop off the stack and attempt a previous point
+                continue
+
+            randomDirection = choice(validDirs) #choses random direction for carver to move in if valid direction exists
+
 
             if randomDirection == "Right":
                 self.addEntry(topCoords[0]+1, topCoords[1])
+                carverStack.append(convertCoordsToKey(topCoords[0]+1, topCoords[1]))
 
             if randomDirection == "Left":
                 self.addEntry(topCoords[0]-1, topCoords[1])
+                carverStack.append(convertCoordsToKey(topCoords[0]-1, topCoords[1]))
 
             if randomDirection == "Up":
-                self.addEntry(topCoords[0], topCoords[1]+1)
+                self.addEntry(topCoords[0], topCoords[1]-1)
+                carverStack.append(convertCoordsToKey(topCoords[0], topCoords[1]-1))
 
             if randomDirection == "Down":
-                self.addEntry(topCoords[0], topCoords[1]-1)
+                self.addEntry(topCoords[0], topCoords[1]+1)
+                carverStack.append(convertCoordsToKey(topCoords[0], topCoords[1]+1))
 
         #add start and end elements
         while True:#keeps running until we finally add the start entry
