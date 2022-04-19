@@ -132,7 +132,7 @@ class AdjacencyList:
         coords = convertToTuple(key)#x and y
         validDirs = ("Right", "Down", "Left", "Up") #filled tuple, pop as needed
         minRange = 0
-        maxRange = 999
+        maxRange = 699
         
         Checkers = ((1, 1), (1, 0), (1, -1), (2, 1), (2, 0), (2, -1)) #swap X and Y for Right(or left) vs Down(or up); swap signs to go from (right/up) to (left/down)
      
