@@ -1,4 +1,6 @@
+from audioop import add
 from collections import deque
+from random import randint, choice
 
 class AdjacencyList:
     mainDictionary = {}
@@ -123,6 +125,85 @@ class AdjacencyList:
                     if self.mainDictionary[u]["Down"] not in visited:
                         stack.append(self.mainDictionary[u]["Down"])
                         parent[self.mainDictionary[u]["Down"]] = u
+
+    def deleteMaze(self):
+        self.mainDictionary = {}
+
+    def returnValidDirections(self, key):#returns a set of valid directions that the carver can hop to
+        coords = convertToTuple(key)#x and y
+        validDirs = ("Right", "Down", "Left", "Up") #filled tuple, pop as needed
+        
+        Checkers = ((1, 1), (1, 0), (1, -1), (2, 1), (2, 0), (2, -1)) #swap X and Y for Right(or left) vs Down(or up); swap signs to go from (right/up) to (left/down)
+     
+        for i in Checkers:
+            #Right Check
+            if convertCoordsToKey(coords[0]+Checkers[i][0], coords[1]+Checkers[i][1]) in self.mainDictionary.keys():
+                validDirs.pop("Right")
+
+            #Left Check
+            if convertCoordsToKey(coords[0]-Checkers[i][0], coords[1]-Checkers[i][1]) in self.mainDictionary.keys():
+                validDirs.pop("Left")
+
+            #Down check
+            if convertCoordsToKey(coords[0]-Checkers[i][1], coords[1]-Checkers[i][0]) in self.mainDictionary.keys():
+                validDirs.pop("Up")
+
+            #Up Check
+            if convertCoordsToKey(coords[0]+Checkers[i][1], coords[1]+Checkers[i][0]) in self.mainDictionary.keys():
+                validDirs.pop("Down")
+
+        return validDirs
+
+    def generateMaze(self, seed):
+
+        if seed != 0: #If we set the seed to 0, then it'll just be random
+            seed(seed) #sets rng seed
+
+        startingX = randint(0, 699, 1)
+        startingY = randint(0, 699, 1)
+        startingKey = convertCoordsToKey(startingX, startingY)
+
+        carverStack = deque([startingKey]) #initial carver point
+        self.addEntry(startingX, startingY) #initial carver point
+
+        #MAIN GENERATION ALGORITHM FOR CARVING MAZE
+        while carverStack: #has elements
+            stackTop = carverStack[0] #gets top element(where the carver is right now)
+            topCoords = convertToTuple(stackTop) #gets numerical form of the coords
+            validDirs = self.returnValidDirections(stackTop) #gets set of valid directions
+            randomDirection = choice(validDirs) #choses random direction for carver to move in
+
+            if randomDirection == "Right":
+                self.addEntry(topCoords[0]+1, topCoords[1])
+
+            if randomDirection == "Left":
+                self.addEntry(topCoords[0]-1, topCoords[1])
+
+            if randomDirection == "Up":
+                self.addEntry(topCoords[0], topCoords[1]+1)
+
+            if randomDirection == "Down":
+                self.addEntry(topCoords[0], topCoords[1]-1)
+
+        #add start and end elements
+        while True:#keeps running until we finally add the start entry
+            randCoords = generateRandCoordTup()
+            if convertCoordsToKey(randCoords[0], randCoords[1]) in self.mainDictionary.keys():
+                self.addStartEntry(randCoords[0], randCoords[1])
+                startCoords = randCoords
+                break
+
+        while True:#keeps running until we finally add the end entry
+            randCoords = generateRandCoordTup()
+            if convertCoordsToKey(randCoords[0], randCoords[1]) in self.mainDictionary.keys() and randCoords != startCoords:
+                self.EndEntry(randCoords[0], randCoords[1])
+                break
+
+
+def generateRandCoordTup():
+    X = randint(0, 699, 1)
+    Y = randint(0, 699, 1)
+    return (X,Y)
 
 
 def convertToTuple(key):   
