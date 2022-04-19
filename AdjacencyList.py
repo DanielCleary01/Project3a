@@ -208,7 +208,7 @@ class AdjacencyList:
         while True:#keeps running until we finally add the end entry
             randCoords = generateRandCoordTup()
             if convertCoordsToKey(randCoords[0], randCoords[1]) in self.mainDictionary.keys() and randCoords != startCoords:
-                self.EndEntry(randCoords[0], randCoords[1])
+                self.addEndEntry(randCoords[0], randCoords[1])
                 break
 
 
