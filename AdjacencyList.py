@@ -132,25 +132,27 @@ class AdjacencyList:
     def returnValidDirections(self, key):#returns a set of valid directions that the carver can hop to
         coords = convertToTuple(key)#x and y
         validDirs = ("Right", "Down", "Left", "Up") #filled tuple, pop as needed
+        minRange = 0
+        maxRange = 999
         
         Checkers = ((1, 1), (1, 0), (1, -1), (2, 1), (2, 0), (2, -1)) #swap X and Y for Right(or left) vs Down(or up); swap signs to go from (right/up) to (left/down)
      
         for i in Checkers:
             #Right Check
-            if convertCoordsToKey(coords[0]+Checkers[i][0], coords[1]+Checkers[i][1]) in self.mainDictionary.keys():
-                validDirs.pop("Right")
+            if convertCoordsToKey(coords[0]+Checkers[i][0], coords[1]+Checkers[i][1]) in self.mainDictionary.keys() or coords[0] > maxRange:
+                validDirs.pop("Right")#right is invalid
 
             #Left Check
-            if convertCoordsToKey(coords[0]-Checkers[i][0], coords[1]-Checkers[i][1]) in self.mainDictionary.keys():
-                validDirs.pop("Left")
+            if convertCoordsToKey(coords[0]-Checkers[i][0], coords[1]-Checkers[i][1]) in self.mainDictionary.keys() or coords[0] < minRange:
+                validDirs.pop("Left")#left is invalid
 
             #Down check
-            if convertCoordsToKey(coords[0]-Checkers[i][1], coords[1]-Checkers[i][0]) in self.mainDictionary.keys():
-                validDirs.pop("Up")
+            if convertCoordsToKey(coords[0]-Checkers[i][1], coords[1]-Checkers[i][0]) in self.mainDictionary.keys() or coords[1] > maxRange:
+                validDirs.pop("Up")#up is invalid
 
             #Up Check
-            if convertCoordsToKey(coords[0]+Checkers[i][1], coords[1]+Checkers[i][0]) in self.mainDictionary.keys():
-                validDirs.pop("Down")
+            if convertCoordsToKey(coords[0]+Checkers[i][1], coords[1]+Checkers[i][0]) in self.mainDictionary.keys() or coords[1] < minRange:
+                validDirs.pop("Down")#down is invalid
 
         return validDirs
 
